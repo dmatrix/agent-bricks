@@ -1,10 +1,10 @@
 # Databricks Agent Development Platform
 
-![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
-![Framework](https://img.shields.io/badge/LangGraph-Deep%20Agents-ff6f61.svg)
-![Deploy](https://img.shields.io/badge/deploy-Databricks%20Apps-ff5f46.svg)
-![Tracing](https://img.shields.io/badge/observability-MLflow-0194e2.svg)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C.svg?logo=langgraph&logoColor=white)](https://github.com/langchain-ai/langgraph)
+[![Databricks](https://img.shields.io/badge/Databricks-FF3621.svg?logo=databricks&logoColor=white)](https://www.databricks.com/)
+[![MLflow](https://img.shields.io/badge/observability-MLflow-0194e2.svg)](https://mlflow.org/)
 
 ![Agent Bricks Platform](images/agent_bricks.svg)
 
@@ -20,7 +20,7 @@ One directory per agent, each self-contained: its own `pyproject.toml`, its own 
 
 | Project | Showcases | Tags | Start here |
 | --- | --- | --- | --- |
-| [research-agent](research-agent/) | **Planning** — writes a todo list, works the list, then synthesises | `langgraph` `deep-agents` `planning` `human-in-the-loop` `mcp` `memory` `sessions` `mlflow-tracing` | [README](research-agent/README.md) · [study guide](research-agent/study_guide.md) |
+| [research-agent](research-agent/) | **Planning** — writes a todo list, works the list, then synthesises. Show cases how to run Langraph Deep Agent with Agent Bricks. | `langgraph` `deep-agents` `planning` `human-in-the-loop` `mcp` `memory` `sessions` `mlflow-tracing` | [README](research-agent/README.md) · [study guide](research-agent/study_guide.md) |
 
 More are coming. `research-agent/README.md` already names two of them: `fs-agent` and `multi-agent`,
 which showcase the other two middlewares `create_deep_agent` installs — the virtual filesystem and
