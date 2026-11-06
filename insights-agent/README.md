@@ -22,9 +22,9 @@ sales data, a Vector Search index for customer reviews, and in-process Python to
 human-approval gate — with session and memory stores bound and every turn traced in
 MLflow](images/insights_agent_architecture.svg)
 
-**This agent runs deployed only.** `agentbricks dev` cannot build its graph: every tool binding is
+**This agent runs deployed only.** `agentbricks dev` cannot build its graph: the Genie binding is
 `auth = "user"`, and request-user auth needs a signed-in person, which only the deployed app behind
-Apps ingress has. That is the price of querying as *you* rather than as the app's service
+Apps ingress has. That is the price of querying Genie as *you* rather than as the app's service
 principal — see **Why deploy-only**.
 
 ## The two data components
@@ -82,7 +82,9 @@ client resumes with the same `session_id`. Memory tools (`remember`, `recall`, `
 
 ## Act 1 — build it live (~8 min)
 
-Every step is one command, and nothing but `agent.toml` changes between them.
+Each step is one command. A binding only writes a `[[tools]]` entry into `agent.toml`, which is why
+the agent code does not change between them — and the one capability with no manifest kind, Vector
+Search, is exactly the one that needed hand-written code.
 
 ```bash
 agentbricks init insights-agent --framework openai     # scaffold + chat app; binds stores & tracing
@@ -92,8 +94,10 @@ agentbricks --profile <profile> deploy insights-agent  # ~3 min first time, ~30s
 ```
 
 The line to say out loud: **tool bindings are declarative.** Genie arrives as one command plus a
-redeploy, with no change to the agent code. Only two files are hand-written — `agent/prompts.py`
-(which source answers what) and `agent/mcps.py` (the review index).
+redeploy, with no change to the agent code. Beyond the scaffold, three files are hand-written or
+edited, about 92 lines in total: `agent/mcps.py` (the review index, 51 new lines),
+`agent/prompts.py` (which source answers what, 38 new lines), and three edited lines in
+`agent/agent.py` — the prompt import, `instructions=`, and `MODEL`.
 
 `agentbricks init` already binds the Session Store, Memory Store and tracing experiment, so there is
 nothing to wire for durability or observability.
@@ -216,8 +220,11 @@ source table.
 
 ## Why deploy-only
 
-Every binding is `auth = "user"` so Genie runs as the signed-in person, who already has access to
-the data. The app's service principal would otherwise need grants on the Genie space and every table.
+The Genie binding is `auth = "user"` so Genie runs as the signed-in person, who already has access
+to the data. The app's service principal would otherwise need grants on the Genie space and every
+table. Vector Search is the exception: `agent/mcps.py` builds that server with a plain
+`WorkspaceClient()`, so it runs as the app's service principal and does need grants — see **Verify
+the three sources**.
 
 The cost of that choice, all of it app-wide once any binding is `user`:
 
@@ -239,4 +246,8 @@ after signing in at **Unity Gateway → MCPs →** `system.ai.slack` **→ Manag
 its write-tool name to `REQUIRE_APPROVAL` in `agent/agent.py` **in the same change**: this
 framework gates approval by tool *name*, not by verb, so an unlisted write tool would post with no
 pause at all.
-- Until then `send_message` carries the approval demo. It logs and returns; it delivers nothing
+- Until then `send_message` carries the approval demo. It logs the call and returns a string saying
+nothing was delivered, deliberately not phrased as a success. **Delete
+`agent/tools/send_message.py` in the same change that binds a real messaging service**: in the
+sibling `research-agent` project a stub like this one out-competed the real Slack MCP tool, so the
+model picked the stub and reported sends that never happened.
