@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Isaac coding-agent local state (config.json holds machine-local settings)
+.isaac/

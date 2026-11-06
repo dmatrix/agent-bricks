@@ -1,0 +1,27 @@
+command:
+- uv
+- run
+- start-server
+env:
+- name: MLFLOW_TRACKING_URI
+  value: databricks
+- name: MLFLOW_EXPERIMENT_ID
+  value: '1199354020145122'
+- name: AGENT_MEMORY_STORE
+  value: insights-agent-ivuwyx-memory
+- name: AGENT_SESSION_STORE
+  value: insights-agent-ivuwyx-sessions
+- name: PIP_INDEX_URL
+  value: https://pypi.org/simple/
+- name: UV_INDEX_URL
+  value: https://pypi.org/simple/
+- name: UV_DEFAULT_INDEX
+  value: https://pypi.org/simple/
+- name: DATABRICKS_AGENTBRICKS_RUNTIME_STORE_LAKEBASE_BRANCH
+  value: projects/databricks-internal-custom-agents/branches/production
+- name: DATABRICKS_AGENTBRICKS_RUNTIME_STORE_DATABASE
+  value: agent-bricks-insights-agent
+- name: DATABRICKS_AGENTBRICKS_RUNTIME_STORE_USERNAME
+  value: 14362ecc-05bd-479c-ad34-af310f52c28e
+- name: DATABRICKS_AGENTBRICKS_RUNTIME_STORE_SCHEMA
+  value: databricks_agentkit_runtime

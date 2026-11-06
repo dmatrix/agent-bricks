@@ -1,4 +1,9 @@
 const elements = {
+  workspace: document.querySelector(".workspace"),
+  toggleEvents: document.querySelector("#toggle-events"),
+  toggleEventsLabel: document.querySelector("#toggle-events-label"),
+  toggleSessions: document.querySelector("#toggle-sessions"),
+  sessionsBody: document.querySelector("#sessions-body"),
   approvalPanel: document.querySelector("#approval-panel"),
   approvalSummary: document.querySelector("#approval-summary"),
   approveAction: document.querySelector("#approve-action"),
@@ -66,6 +71,8 @@ const elements = {
 const AGENT_FRAMEWORK = "Deep Agents · Planning";
 
 const SESSION_STORAGE_KEY = "databricks-agentbricks-session-id";
+const EVENTS_COLLAPSED_KEY = "databricks-agentbricks-events-collapsed";
+const SESSIONS_COLLAPSED_KEY = "databricks-agentbricks-sessions-collapsed";
 
 function newSessionId() {
   return crypto.randomUUID();
@@ -886,7 +893,14 @@ function renderMemoryCards(entries, query) {
     foot.className = "memory-entry-foot";
     const actor = document.createElement("span");
     actor.className = "memory-entry-actor";
-    actor.textContent = entry.actor_id || "";
+    // Under request-user auth the stored actor_id is a SHA-256 partition key, not an identity —
+    // see `_effective_actor` in runtime/ui.py. 64 hex characters tell the reader nothing, so show
+    // the human actor and keep the real key in the tooltip. A no-op while every binding is
+    // `auth = "app"`, which is this project's case today.
+    const rawActor = entry.actor_id || "";
+    const hashedActor = /^[0-9a-f]{64}$/.test(rawActor);
+    actor.textContent = hashedActor ? currentMemoryActor() || "you" : rawActor;
+    if (hashedActor) actor.title = `partition key ${rawActor.slice(0, 12)}…`;
     const time = document.createElement("span");
     time.className = "memory-entry-time";
     time.textContent = prettyDate(entry.update_time || entry.create_time);
@@ -1732,3 +1746,41 @@ loadConfig().catch((error) => {
   // The Tools row doesn't depend on the runtime config, so load it even when config fails.
   void loadTools();
 });
+
+// ---- Collapsible Events pane -----------------------------------------------------------------
+// Preference is remembered: the pane re-renders on every event and must not reopen itself.
+function applyEventsCollapsed(collapsed) {
+  elements.workspace?.classList.toggle("events-collapsed", collapsed);
+  if (elements.toggleEvents) {
+    elements.toggleEvents.setAttribute("aria-expanded", String(!collapsed));
+    elements.toggleEvents.title = collapsed ? "Show the Events pane" : "Hide the Events pane";
+  }
+  if (elements.toggleEventsLabel) {
+    elements.toggleEventsLabel.textContent = collapsed ? "Show events" : "Hide events";
+  }
+}
+
+elements.toggleEvents?.addEventListener("click", () => {
+  const collapsed = elements.toggleEvents.getAttribute("aria-expanded") === "true";
+  localStorage.setItem(EVENTS_COLLAPSED_KEY, collapsed ? "1" : "0");
+  applyEventsCollapsed(collapsed);
+});
+
+applyEventsCollapsed(localStorage.getItem(EVENTS_COLLAPSED_KEY) === "1");
+
+// ---- Sessions sub-panel disclosure -----------------------------------------------------------
+function applySessionsCollapsed(collapsed) {
+  if (elements.sessionsBody) elements.sessionsBody.hidden = collapsed;
+  if (elements.toggleSessions) {
+    elements.toggleSessions.setAttribute("aria-expanded", String(!collapsed));
+    elements.toggleSessions.setAttribute("aria-label", collapsed ? "Expand sessions" : "Collapse sessions");
+  }
+}
+
+elements.toggleSessions?.addEventListener("click", () => {
+  const collapsed = elements.toggleSessions.getAttribute("aria-expanded") === "true";
+  localStorage.setItem(SESSIONS_COLLAPSED_KEY, collapsed ? "1" : "0");
+  applySessionsCollapsed(collapsed);
+});
+
+applySessionsCollapsed(localStorage.getItem(SESSIONS_COLLAPSED_KEY) === "1");

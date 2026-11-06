@@ -20,11 +20,15 @@ One directory per agent, each self-contained: its own `pyproject.toml`, its own 
 
 | Project | Showcases | Tags | Start here |
 | --- | --- | --- | --- |
-| [research-agent](research-agent/) | **Planning** — writes a todo list, works the list, then synthesises. Show cases how to run Langraph Deep Agent with Agent Bricks. | `langgraph` `deep-agents` `planning` `human-in-the-loop` `mcp` `memory` `sessions` `mlflow-tracing` | [README](research-agent/README.md) · [study guide](research-agent/study_guide.md) |
+| [research-agent](research-agent/) | **Planning** — writes a todo list, works the list, then synthesises. Showcases running a LangGraph Deep Agent on Agent Bricks. | `langgraph` `deep-agents` `planning` `human-in-the-loop` `mcp` `memory` `sessions` `mlflow-tracing` | [README](research-agent/README.md) · [study guide](research-agent/study_guide.md) |
+| [insights-agent](insights-agent/) | **Structured + unstructured on one question** — Genie for sales numbers, Vector Search for customer reviews, with charts and tables in the chat. Deploy-only. | `openai` `genie` `vector-search` `mcp` `human-in-the-loop` `sessions` `memory` `mlflow-tracing` | [README](insights-agent/README.md) |
 
-More are coming. `research-agent/README.md` already names two of them: `fs-agent` and `multi-agent`,
-which showcase the other two middlewares `create_deep_agent` installs — the virtual filesystem and
+More are coming. `research-agent/README.md` names two of them: `fs-agent` and `multi-agent`, which
+showcase the other two middlewares `create_deep_agent` installs — the virtual filesystem and
 sub-agent delegation. Neither is in this repo yet.
+
+Each row above is a one-line summary on purpose. How an agent is built, what to ask it, and how to
+verify it all live in that project's own README.
 
 ### Tag vocabulary
 
@@ -35,7 +39,7 @@ A tag means the capability is **wired and demoable in that project**, not merely
 | --- | --- |
 | Framework | `langgraph`, `deep-agents`, `openai` — the two frameworks `agentbricks init` supports, plus the harness on top |
 | Agent capability | `planning`, `filesystem`, `subagents`, `human-in-the-loop` |
-| Platform integration | `mcp`, `memory`, `sessions`, `mlflow-tracing`, `genie`, `uc-functions` |
+| Platform integration | `mcp`, `memory`, `sessions`, `mlflow-tracing`, `genie`, `vector-search`, `uc-functions` |
 
 `research-agent` carries `filesystem` and `subagents` capabilities too — `create_deep_agent`
 installs all three middlewares unconditionally — but they are not tagged there because the
@@ -44,16 +48,18 @@ installs all three middlewares unconditionally — but they are not tagged there
 
 ## What each project looks like
 
-Every agent directory follows the same layout, so the docs are in the same place each time:
+Agent directories follow the same layout, so the docs are in the same place each time. The first
+four are always present; the two marked *optional* appear once a project has grown enough to need
+them, and `research-agent` is the one that has:
 
 | File | Owns |
 | --- | --- |
-| `README.md` | The demo script — run it locally, then deploy it. Start here. |
-| `study_guide.md` | The code reading path: concepts, request lifecycle, which files to read in order |
-| `REFERENCE.md` | The HTTP API, recovery semantics, architecture — what a demo does not need |
+| `README.md` | The demo script. Start here. |
 | `AGENTS.md` | Development map for coding agents. `CLAUDE.md` is a one-line include of it |
 | `AGENTKIT_CONTRACT.md` | Managed-runtime integration requirements |
-| `CHAT_APP.md` | The optional browser chat overlay |
+| `CHAT_APP.md` | The browser chat overlay |
+| `study_guide.md` | *Optional* — the code reading path: concepts, request lifecycle, what to read in order |
+| `REFERENCE.md` | *Optional* — the HTTP API, recovery semantics, architecture; what a demo does not need |
 
 Code sits under `agent/` (the framework-native agent, its prompt and its tools) and `runtime/` (the
 managed-runtime adapter and server). That split is deliberate: `agent/` has no dependency on Agent
