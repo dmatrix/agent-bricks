@@ -1,0 +1,19 @@
+schema_version = 1
+
+[agent]
+framework = "openai"
+server = "agentbricks"
+deployment_name = "insights-agent"
+
+[memory_store]
+name = "insights-agent-ivuwyx-memory"
+
+[session_store]
+name = "insights-agent-ivuwyx-sessions"
+
+[tracing]
+experiment_name = "/Shared/agentbricks_traces/insights-agent-ivuwyx"
+[[tools]]
+id = "bakehouse_sales"
+auth = "user"
+source = {kind = "genie_agent", space_id = "01f1d97fea9b111e883d76f4b787411c"}

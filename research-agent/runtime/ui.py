@@ -511,12 +511,33 @@ def install_ui(app: FastAPI) -> None:
     async def demo_tools() -> dict:
         return await asyncio.to_thread(_tools)
 
+    def _effective_actor(request: Request, actor: str | None = None) -> str:
+        """The actor key the agent actually stores memory under.
+
+        Under request-user auth, `runtime/adapter.py` replaces the caller's actor with
+        `RequestAuthContext.namespace("actor", actor)` — a SHA-256 of host, workspace, app,
+        principal, kind and value — so querying the plain identity returns nothing. Every binding
+        in this project is `auth = "app"` today, which makes this a pass-through; it is here so the
+        memory panel keeps working if a `user` binding is ever added, which is what broke the
+        sibling `insights-agent`. `list_session_items` already does the same for session keys.
+        """
+        plain = actor or _request_actor(request)
+        if not app.auth_policy.requires_user:
+            return plain
+        from databricks_agentkit.runtime.auth import RequestAuthContext
+
+        auth = RequestAuthContext.from_headers(request.headers)
+        try:
+            return auth.namespace("actor", plain)
+        finally:
+            auth.close()
+
     @app.post("/api/demo/memory/entries", include_in_schema=False)
     async def create_memory_entry(request: Request, payload: MemoryEntryRequest) -> dict:
         _require_memory()
         return await _managed_call(
             _state_client().create_memory_entry,
-            _request_actor(request),
+            _effective_actor(request),
             payload,
             _request_session_id(request),
         )
@@ -530,7 +551,7 @@ def install_ui(app: FastAPI) -> None:
         # The UI can browse another actor's memories by passing ?actor=; default to the viewer.
         _require_memory()
         return await _managed_call(
-            _state_client().list_memory_entries, actor or _request_actor(request), path_prefix
+            _state_client().list_memory_entries, _effective_actor(request, actor), path_prefix
         )
 
     @app.post("/api/demo/memory/search", include_in_schema=False)
@@ -538,7 +559,7 @@ def install_ui(app: FastAPI) -> None:
         # payload.actor lets the UI search another actor's memories; default to the viewer.
         _require_memory()
         return await _managed_call(
-            _state_client().search_memory_entries, payload.actor or _request_actor(request), payload
+            _state_client().search_memory_entries, _effective_actor(request, payload.actor), payload
         )
 
     @app.post("/api/demo/sessions", include_in_schema=False)

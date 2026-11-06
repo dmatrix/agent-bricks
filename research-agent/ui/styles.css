@@ -1,23 +1,23 @@
 :root {
   /* Surfaces — cool lavender shell with white card panels. */
-  --page: #f1f3ff;
+  --page: #f3f1ee;
   --surface: #ffffff;
   --surface-raised: #ffffff;
-  --surface-muted: #f7f8fc;
-  --hover: #f0f2f8;
-  --ink: #1f2124;
-  --ink-soft: #5f6469;
-  --ink-faint: #777d86;
-  --line: #e7e9f0;
-  --line-strong: #d9dce6;
+  --surface-muted: #f8f7f5;
+  --hover: #f3f1ee;
+  --ink: #1f2a33;
+  --ink-soft: #4a5a66;
+  --ink-faint: #6b7884;
+  --line: #ebe6e0;
+  --line-strong: #ddd6ce;
 
   /* Accent — Google-blue, used for interactive chrome and focus. */
-  --accent: #1a73e8;
-  --accent-deep: #1a5fc4;
-  --accent-soft: #edf3fd;
+  --accent: #ff3621;
+  --accent-deep: #c82d1b;
+  --accent-soft: #fdeeeb;
 
   /* Brand mark stays warm terracotta. */
-  --brand: #c2410c;
+  --brand: #ff3621;
 
   --success: #137333;
   --success-soft: #e6f4ea;
@@ -26,7 +26,7 @@
   --danger: #b3261e;
   --danger-soft: #fce8e6;
   --purple: #7040a0;
-  --focus: #1a73e8;
+  --focus: #ff3621;
 
   --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03);
   --radius-large: 12px;
@@ -402,7 +402,7 @@ h2 {
 
 .text-button.plain {
   border: 0;
-  color: var(--accent);
+  color: var(--accent-deep);
   font-weight: 600;
 }
 
@@ -454,7 +454,7 @@ h2 {
   height: 22px;
   display: grid;
   place-items: center;
-  color: var(--accent);
+  color: var(--accent-deep);
 }
 
 .capability-icon .icon {
@@ -613,7 +613,7 @@ h2 {
   align-items: center;
   gap: 6px;
   margin-top: 10px;
-  color: var(--accent);
+  color: var(--accent-deep);
   font-weight: 500;
   text-decoration: none;
 }
@@ -879,7 +879,7 @@ h2 {
   margin-bottom: 22px;
   border-radius: var(--radius-medium);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-deep);
 }
 
 .empty-mark .icon {
@@ -1583,7 +1583,7 @@ h2 {
   font-size: 11px;
 }
 
-.cat-invocation { color: var(--accent); }
+.cat-invocation { color: var(--accent-deep); }
 .cat-sessions { color: var(--success); }
 .cat-memory { color: var(--purple); }
 .cat-system { color: var(--ink-soft); }
@@ -1795,7 +1795,7 @@ h2 {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  color: var(--accent);
+  color: var(--accent-deep);
 }
 
 .memory-store-icon .icon {
@@ -2143,4 +2143,57 @@ h2 {
   border-top: 1px solid var(--line);
   color: var(--ink-faint);
   font-size: 12px;
+}
+
+/* ---- Collapsible Events pane -----------------------------------------------------------------
+   The chat column absorbs the freed space; the toggle lives in the chat header so it stays
+   reachable once the pane it controls is gone. */
+.chat-header-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.chat-header-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.chat-header-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.chat-header-toggle .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.workspace.events-collapsed {
+  grid-template-columns: minmax(280px, 0.82fr) minmax(440px, 2.9fr);
+}
+
+.workspace.events-collapsed .right-rail {
+  display: none;
+}
+
+/* ---- Sessions sub-panel disclosure ------------------------------------------------------------
+   Chevron down when open, right when closed. The body hides via the [hidden] attribute, so there
+   is no display rule to keep in sync. */
+.subhead-disclosure .icon {
+  transition: transform 120ms ease;
+}
+
+.subhead-disclosure[aria-expanded="false"] .icon {
+  transform: rotate(-90deg);
 }

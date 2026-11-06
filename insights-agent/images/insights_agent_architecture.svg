@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/><stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="clientGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#48c9b0"/><stop offset="100%" style="stop-color:#1abc9c"/>
+    </linearGradient>
+    <linearGradient id="runtimeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f3460"/><stop offset="100%" style="stop-color:#1a5276"/>
+    </linearGradient>
+    <linearGradient id="agentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560"/><stop offset="100%" style="stop-color:#c73e54"/>
+    </linearGradient>
+    <linearGradient id="genieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a5276"/><stop offset="100%" style="stop-color:#21618c"/>
+    </linearGradient>
+    <linearGradient id="vectorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#533483"/><stop offset="100%" style="stop-color:#6c3d9e"/>
+    </linearGradient>
+    <linearGradient id="localGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7d6608"/><stop offset="100%" style="stop-color:#9a7d0a"/>
+    </linearGradient>
+    <linearGradient id="chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2833"/><stop offset="100%" style="stop-color:#2c3e50"/>
+    </linearGradient>
+    <linearGradient id="traceGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:0.15"/>
+      <stop offset="50%" style="stop-color:#2ecc71;stop-opacity:0.05"/>
+      <stop offset="100%" style="stop-color:#2ecc71;stop-opacity:0.15"/>
+    </linearGradient>
+    <filter id="softShadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/></filter>
+    <filter id="subtleShadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.2"/></filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bgGrad)" rx="16"/>
+  <g opacity="0.03">
+    <line x1="0" y1="150" x2="1200" y2="150" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="400" x2="1200" y2="400" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="650" x2="1200" y2="650" stroke="#fff" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="900" stroke="#fff" stroke-width="1"/>
+    <line x1="800" y1="0" x2="800" y2="900" stroke="#fff" stroke-width="1"/>
+  </g>
+
+  <text x="600" y="40" fill="#fff" font-size="15" font-weight="600" letter-spacing="3" text-anchor="middle" opacity="0.75">INSIGHTS-AGENT  ·  STRUCTURED  +  UNSTRUCTURED, ON ONE QUESTION</text>
+  <g font-size="11" font-weight="600" text-anchor="middle">
+    <rect x="300" y="58" width="150" height="26" rx="13" fill="#e94560" opacity="0.22"/><text x="375" y="75" fill="#ff8095">OpenAI Agents SDK</text>
+    <rect x="462" y="58" width="112" height="26" rx="13" fill="#4fc3f7" opacity="0.22"/><text x="518" y="75" fill="#7fd3fb">Genie</text>
+    <rect x="586" y="58" width="152" height="26" rx="13" fill="#bb86fc" opacity="0.22"/><text x="662" y="75" fill="#cfa6ff">Vector Search</text>
+    <rect x="750" y="58" width="150" height="26" rx="13" fill="#f5a623" opacity="0.22"/><text x="825" y="75" fill="#f7bf5e">Databricks Apps</text>
+  </g>
+
+  <rect x="40" y="100" width="1120" height="760" rx="14" fill="url(#traceGrad)"/>
+  <text x="68" y="126" fill="#2ecc71" font-size="11" font-weight="600" letter-spacing="1.5" opacity="0.65">MLflow TRACING  ·  every turn is one span tree in the bound workspace experiment</text>
+
+  <!-- clients -->
+  <g filter="url(#softShadow)">
+    <rect x="230" y="148" width="310" height="62" rx="14" fill="url(#clientGrad)"/>
+    <rect x="660" y="148" width="310" height="62" rx="14" fill="url(#clientGrad)"/>
+  </g>
+  <text x="258" y="176" fill="#0b2b26" font-size="15" font-weight="700">Chat app</text>
+  <text x="258" y="196" fill="#0b2b26" font-size="10.5" opacity="0.85">ui/ — charts, tables, folded rows, approval panel</text>
+  <text x="688" y="176" fill="#0b2b26" font-size="15" font-weight="700">HTTP client</text>
+  <text x="688" y="196" fill="#0b2b26" font-size="10.5" opacity="0.85">agentbricks endpoint invoke  ·  /api/invocations</text>
+  <rect x="455" y="222" width="290" height="22" rx="11" fill="#0f3460" opacity="0.85"/>
+  <text x="600" y="237" fill="#9fd3f5" font-size="10" text-anchor="middle">POST  ·  id, session_id, input  ·  x-forwarded-access-token</text>
+  <path d="M385 210 L385 252" stroke="#48c9b0" stroke-width="2" marker-end="url(#a)"/>
+  <path d="M815 210 L815 252" stroke="#48c9b0" stroke-width="2" marker-end="url(#a)"/>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#48c9b0"/></marker></defs>
+
+  <!-- runtime -->
+  <g filter="url(#softShadow)"><rect x="150" y="256" width="900" height="88" rx="16" fill="url(#runtimeGrad)"/></g>
+  <text x="182" y="288" fill="#fff" font-size="16" font-weight="700">Agent Bricks runtime</text>
+  <text x="182" y="310" fill="#9fd3f5" font-size="10.5" font-weight="500">runtime/main.py — DurableAgentServer  ·  runtime/adapter.py — invoke() / recover()</text>
+  <text x="182" y="330" fill="#cfe6f7" font-size="10" opacity="0.75">auth = "user" on every binding, so each request runs as the signed-in person, not the app</text>
+  <path d="M600 344 L600 382" stroke="#4fc3f7" stroke-width="2" marker-end="url(#b)"/>
+  <defs><marker id="b" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4fc3f7"/></marker></defs>
+
+  <!-- agent -->
+  <g filter="url(#softShadow)"><rect x="150" y="386" width="900" height="116" rx="16" fill="url(#agentGrad)"/></g>
+  <text x="182" y="418" fill="#fff" font-size="17" font-weight="700">Insights Agent</text>
+  <text x="182" y="440" fill="#ffe3e8" font-size="10.5">agent/agent.py:create_agent → Agent(instructions, tools, mcp_servers)</text>
+  <text x="182" y="459" fill="#ffd0d8" font-size="9.5" font-weight="600" letter-spacing="1.2" opacity="0.8">NO PLANNING MIDDLEWARE — THIS SDK HAS NO write_todos; THE MODEL PICKS THE SOURCE ITSELF</text>
+  <g filter="url(#subtleShadow)">
+    <rect x="182" y="468" width="268" height="24" rx="8" fill="url(#chipGrad)" stroke="#fff" stroke-opacity="0.18"/>
+    <rect x="462" y="468" width="268" height="24" rx="8" fill="url(#chipGrad)" stroke="#fff" stroke-opacity="0.18"/>
+    <rect x="742" y="468" width="276" height="24" rx="8" fill="url(#chipGrad)" stroke="#fff" stroke-opacity="0.18"/>
+  </g>
+  <text x="196" y="484" fill="#ffd0d8" font-size="10" font-weight="600">instructions · agent/prompts.py</text>
+  <text x="476" y="484" fill="#ffd0d8" font-size="10" font-weight="600">REQUIRE_APPROVAL · gates by tool name</text>
+  <text x="756" y="484" fill="#ffd0d8" font-size="10" font-weight="600">model · system.ai.gpt-5-5 via AI Gateway</text>
+
+  <path d="M330 502 L240 548" stroke="#4fc3f7" stroke-width="2" opacity="0.8" marker-end="url(#c)"/>
+  <path d="M600 502 L600 548" stroke="#bb86fc" stroke-width="2" opacity="0.8" marker-end="url(#d)"/>
+  <path d="M870 502 L960 548" stroke="#f5a623" stroke-width="2" opacity="0.8" marker-end="url(#e)"/>
+  <defs>
+    <marker id="c" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4fc3f7"/></marker>
+    <marker id="d" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#bb86fc"/></marker>
+    <marker id="e" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f5a623"/></marker>
+  </defs>
+
+  <!-- THE THREE SOURCES -->
+  <g filter="url(#softShadow)">
+    <rect x="60" y="552" width="356" height="212" rx="16" fill="url(#genieGrad)"/>
+    <rect x="432" y="552" width="356" height="212" rx="16" fill="url(#vectorGrad)"/>
+    <rect x="804" y="552" width="336" height="212" rx="16" fill="url(#localGrad)"/>
+  </g>
+
+  <text x="86" y="582" fill="#fff" font-size="15" font-weight="700">Genie  ·  the numbers</text>
+  <text x="86" y="600" fill="#bfe3f8" font-size="10" font-weight="600" letter-spacing="0.8">STRUCTURED  ·  NL → SQL over Unity Catalog</text>
+  <g filter="url(#subtleShadow)">
+    <rect x="80" y="610" width="316" height="22" rx="7" fill="url(#chipGrad)"/>
+    <rect x="80" y="637" width="316" height="22" rx="7" fill="url(#chipGrad)"/>
+    <rect x="80" y="664" width="316" height="22" rx="7" fill="url(#chipGrad)"/>
+  </g>
+  <text x="92" y="625" fill="#9fd3f5" font-size="9.5" font-weight="600">bakehouse_sales_ask  ·  question in</text>
+  <text x="92" y="652" fill="#9fd3f5" font-size="9.5" font-weight="600">bakehouse_sales_poll  ·  120s cap, then poll</text>
+  <text x="92" y="679" fill="#9fd3f5" font-size="9.5" font-weight="600">bakehouse_sales_query_result  ·  rows + SQL</text>
+  <text x="86" y="706" fill="#fff" font-size="9.5" opacity="0.6">agent.toml  ·  kind = genie_agent, one pinned space</text>
+  <rect x="80" y="716" width="316" height="38" rx="8" fill="#000" opacity="0.22"/>
+  <text x="92" y="731" fill="#7fd3fb" font-size="9">samples.bakehouse.sales_transactions · _customers</text>
+  <text x="92" y="745" fill="#7fd3fb" font-size="9">_franchises · _suppliers   —   public, read-only</text>
+
+  <text x="458" y="582" fill="#fff" font-size="15" font-weight="700">Vector Search  ·  the opinions</text>
+  <text x="458" y="600" fill="#e0ccff" font-size="10" font-weight="600" letter-spacing="0.8">UNSTRUCTURED  ·  retrieval by meaning</text>
+  <g filter="url(#subtleShadow)">
+    <rect x="452" y="610" width="316" height="22" rx="7" fill="url(#chipGrad)"/>
+    <rect x="452" y="637" width="316" height="22" rx="7" fill="url(#chipGrad)"/>
+    <rect x="452" y="664" width="316" height="22" rx="7" fill="url(#chipGrad)"/>
+  </g>
+  <text x="464" y="625" fill="#cfa6ff" font-size="9.5" font-weight="600">bakehouse_reviews_index  ·  query_text in</text>
+  <text x="464" y="652" fill="#cfa6ff" font-size="9.5" font-weight="600">196 chunks  ·  avg 592 chars  ·  gte-large-en</text>
+  <text x="464" y="679" fill="#cfa6ff" font-size="9.5" font-weight="600">returns franchiseID  →  attributable passages</text>
+  <text x="458" y="706" fill="#fff" font-size="9.5" opacity="0.6">agent/mcps.py  ·  /api/2.0/mcp/vector-search/{cat}/{sch}</text>
+  <rect x="452" y="716" width="316" height="38" rx="8" fill="#000" opacity="0.22"/>
+  <text x="464" y="731" fill="#cfa6ff" font-size="9">jules_catalog.default.bakehouse_review_chunks</text>
+  <text x="464" y="745" fill="#cfa6ff" font-size="9">← samples.bakehouse.media_gold_reviews_chunked</text>
+
+  <text x="830" y="582" fill="#fff" font-size="15" font-weight="700">Python tools  ·  the action</text>
+  <text x="830" y="600" fill="#f7e6b0" font-size="10" font-weight="600" letter-spacing="0.8">IN-PROCESS  ·  agent/tools/, auto-discovered</text>
+  <g filter="url(#subtleShadow)">
+    <rect x="824" y="610" width="296" height="22" rx="7" fill="url(#chipGrad)"/>
+    <rect x="824" y="637" width="296" height="22" rx="7" fill="url(#chipGrad)"/>
+    <rect x="824" y="664" width="296" height="22" rx="7" fill="url(#chipGrad)"/>
+  </g>
+  <text x="836" y="625" fill="#f7d98b" font-size="9.5" font-weight="600">send_message</text>
+  <rect x="1036" y="613" width="76" height="16" rx="8" fill="#f5a623" opacity="0.3"/>
+  <text x="1074" y="625" fill="#ffd98a" font-size="8.5" font-weight="700" text-anchor="middle">APPROVAL</text>
+  <text x="836" y="652" fill="#f7d98b" font-size="9.5" font-weight="600">remember · recall · forget · list_memories</text>
+  <text x="836" y="679" fill="#f7d98b" font-size="9.5" font-weight="600">get_current_time</text>
+  <text x="830" y="706" fill="#fff" font-size="9.5" opacity="0.6">Slack MCP drops in here — one tools add away</text>
+  <rect x="824" y="716" width="296" height="38" rx="8" fill="#000" opacity="0.22"/>
+  <text x="836" y="731" fill="#f7d98b" font-size="9">needs_approval=True pauses the turn and emits</text>
+  <text x="836" y="745" fill="#f7d98b" font-size="9">an interrupt; resume with the same session_id</text>
+
+  <!-- state -->
+  <g filter="url(#subtleShadow)">
+    <rect x="60" y="782" width="1080" height="30" rx="10" fill="url(#chipGrad)" stroke="#4fc3f7" stroke-opacity="0.3"/>
+  </g>
+  <text x="80" y="802" fill="#4fc3f7" font-size="10.5" font-weight="600">STATE  ·  bound in agent.toml</text>
+  <text x="270" y="802" fill="#cfe6f7" font-size="10">Session Store — one conversation, durable across restarts   ·   Memory Store — facts recalled across conversations, keyed by actor</text>
+
+  <rect x="60" y="822" width="1080" height="28" rx="10" fill="#f5a623" opacity="0.12"/>
+  <text x="80" y="841" fill="#f5a623" font-size="10" font-weight="700">DEPLOY ONLY</text>
+  <text x="188" y="841" fill="#f7d98b" font-size="10">`agentbricks dev` cannot build this graph — request-user bindings need a signed-in person, which only the deployed app has.</text>
+</svg>

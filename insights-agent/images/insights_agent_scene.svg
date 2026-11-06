@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/><stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="appGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f3460"/><stop offset="100%" style="stop-color:#1a5276"/>
+    </linearGradient>
+    <linearGradient id="deskGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2c3e50"/><stop offset="100%" style="stop-color:#1c2833"/>
+    </linearGradient>
+    <linearGradient id="personGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#48c9b0"/><stop offset="100%" style="stop-color:#1abc9c"/>
+    </linearGradient>
+    <linearGradient id="chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2833"/><stop offset="100%" style="stop-color:#2c3e50"/>
+    </linearGradient>
+    <filter id="softShadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/></filter>
+    <filter id="subtleShadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.2"/></filter>
+  </defs>
+
+  <rect width="1200" height="600" fill="url(#bgGrad)" rx="16"/>
+  <g opacity="0.03">
+    <line x1="0" y1="150" x2="1200" y2="150" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="450" x2="1200" y2="450" stroke="#fff" stroke-width="1"/>
+    <line x1="300" y1="0" x2="300" y2="600" stroke="#fff" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="600" stroke="#fff" stroke-width="1"/>
+    <line x1="900" y1="0" x2="900" y2="600" stroke="#fff" stroke-width="1"/>
+  </g>
+  <circle cx="90" cy="110" r="30" fill="#ff3621" opacity="0.06"/>
+  <circle cx="1130" cy="540" r="40" fill="#48c9b0" opacity="0.06"/>
+  <circle cx="1080" cy="120" r="26" fill="#533483" opacity="0.06"/>
+  <circle cx="660" cy="86" r="3" fill="#48c9b0" opacity="0.15"/>
+
+  <text x="600" y="42" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" opacity="0.35" letter-spacing="3">AN ANALYST  ·  AND THE INSIGHTS-AGENT APP</text>
+
+  <!-- ============ What she asks — one question, two sources ============ -->
+  <path d="M168 282 L190 282 L174 318 Z" fill="#48c9b0" opacity="0.14"/>
+  <rect x="92" y="214" width="268" height="70" rx="16" fill="#48c9b0" opacity="0.14" stroke="#48c9b0" stroke-width="1" stroke-opacity="0.35"/>
+  <text x="110" y="238" fill="#fff" font-size="10" opacity="0.9">Which franchises sold the most, and</text>
+  <text x="110" y="256" fill="#fff" font-size="10" opacity="0.9">what are customers complaining about?</text>
+  <text x="110" y="274" fill="#48c9b0" font-size="9" opacity="0.8">one question · two sources</text>
+
+  <!-- ============ The analyst ============ -->
+  <g transform="rotate(-5 148 430)">
+    <rect x="126" y="346" width="46" height="124" rx="18" fill="#16213e" stroke="#48c9b0" stroke-width="1" stroke-opacity="0.25"/>
+    <line x1="149" y1="372" x2="149" y2="446" stroke="#48c9b0" stroke-width="1" stroke-opacity="0.15"/>
+  </g>
+  <circle cx="178" cy="354" r="21" fill="url(#personGrad)"/>
+  <rect x="171" y="372" width="14" height="12" fill="#17a589"/>
+  <path d="M178 378 C198 378 207 390 209 404 L213 456 L143 456 L147 404 C149 390 158 378 178 378 Z" fill="#1abc9c"/>
+
+  <rect x="210" y="452" width="462" height="11" rx="5" fill="url(#deskGrad)"/>
+  <rect x="210" y="463" width="462" height="10" fill="#131d33"/>
+  <rect x="228" y="473" width="12" height="51" rx="2" fill="#1c2833"/>
+  <rect x="642" y="473" width="12" height="51" rx="2" fill="#1c2833"/>
+
+  <rect x="262" y="442" width="86" height="10" rx="3" fill="#2c3e50" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.25"/>
+  <g stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.2">
+    <line x1="268" y1="445" x2="342" y2="445"/><line x1="268" y1="449" x2="342" y2="449"/>
+  </g>
+  <path d="M194 396 C226 404 248 424 264 437" stroke="#48c9b0" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <circle cx="270" cy="441" r="6.5" fill="#48c9b0"/>
+
+  <rect x="628" y="432" width="20" height="20" rx="3" fill="#ff3621" opacity="0.8"/>
+  <path d="M650 437 q8 5 0 10" stroke="#ff3621" stroke-width="2.5" fill="none" opacity="0.8"/>
+
+  <!-- ============ Monitor: the chat app, answering with a chart ============ -->
+  <ellipse cx="500" cy="452" rx="48" ry="6" fill="#1c2833"/>
+  <rect x="492" y="424" width="16" height="28" fill="#1c2833"/>
+  <g filter="url(#softShadow)">
+    <rect x="382" y="246" width="236" height="178" rx="10" fill="#0f2027" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.3"/>
+  </g>
+  <rect x="390" y="254" width="220" height="162" rx="6" fill="#16213e"/>
+  <path d="M390 260 a6 6 0 0 1 6 -6 h208 a6 6 0 0 1 6 6 v14 h-220 z" fill="#0f3460"/>
+  <circle cx="402" cy="264" r="3" fill="#ff3621"/>
+  <circle cx="412" cy="264" r="3" fill="#f5a623"/>
+  <circle cx="422" cy="264" r="3" fill="#2ecc71"/>
+  <text x="434" y="268" fill="#fff" font-size="8.5" opacity="0.7">insights-agent</text>
+
+  <text x="400" y="290" fill="#4fc3f7" font-size="8" font-weight="700" letter-spacing="0.6" opacity="0.9">TOTAL SALES BY FRANCHISE</text>
+  <!-- A miniature of the real chart: descending bars, baseline, value at each bar end. -->
+  <line x1="464" y1="298" x2="464" y2="352" stroke="#fff" stroke-width="1" stroke-opacity="0.18"/>
+  <text x="460" y="309" fill="#fff" font-size="7" opacity="0.6" text-anchor="end">Baked Bliss</text>
+  <rect x="464" y="303" width="100" height="8" rx="2" fill="#4fc3f7"/>
+  <text x="569" y="309" fill="#fff" font-size="7" font-weight="600" opacity="0.85">6,642</text>
+  <text x="460" y="326" fill="#fff" font-size="7" opacity="0.6" text-anchor="end">Sweet Sins.</text>
+  <rect x="464" y="320" width="68" height="8" rx="2" fill="#4fc3f7"/>
+  <text x="537" y="326" fill="#fff" font-size="7" font-weight="600" opacity="0.85">4,512</text>
+  <text x="460" y="343" fill="#fff" font-size="7" opacity="0.6" text-anchor="end">Crumbly Nook</text>
+  <rect x="464" y="337" width="42" height="8" rx="2" fill="#4fc3f7"/>
+  <text x="511" y="343" fill="#fff" font-size="7" font-weight="600" opacity="0.85">2,790</text>
+
+  <!-- the review passage that lands underneath it -->
+  <rect x="400" y="360" width="200" height="46" rx="6" fill="#bb86fc" opacity="0.1"/>
+  <text x="408" y="374" fill="#cfa6ff" font-size="7" font-weight="700" letter-spacing="0.4">CUSTOMER REVIEWS</text>
+  <g fill="#fff" opacity="0.25">
+    <rect x="408" y="381" width="182" height="3.5" rx="1.75"/>
+    <rect x="408" y="390" width="164" height="3.5" rx="1.75"/>
+    <rect x="408" y="399" width="108" height="3.5" rx="1.75"/>
+  </g>
+
+  <!-- ============ Between the desk and the app ============ -->
+  <path d="M624 300 C652 294 678 290 706 288" stroke="#48c9b0" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.65"/>
+  <polygon points="704,281 716,288 703,294" fill="#48c9b0" opacity="0.65"/>
+  <text x="668" y="276" fill="#48c9b0" font-size="8.5" font-weight="600" text-anchor="middle" opacity="0.9">POST /api/invocations</text>
+
+  <path d="M706 372 C678 374 652 378 624 384" stroke="#2ecc71" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <polygon points="628,377 616,385 629,391" fill="#2ecc71" opacity="0.6"/>
+  <text x="714" y="404" fill="#2ecc71" font-size="8.5" font-weight="600" text-anchor="end" opacity="0.9">chart  ·  table  ·  quoted reviews</text>
+
+  <!-- ============ The app ============ -->
+  <g filter="url(#softShadow)">
+    <rect x="722" y="172" width="428" height="300" rx="20" fill="url(#appGrad)"/>
+  </g>
+  <g transform="translate(756, 206)">
+    <rect x="-13" y="-11" width="26" height="22" rx="4" fill="none" stroke="#4fc3f7" stroke-width="2"/>
+    <line x1="-13" y1="-4" x2="13" y2="-4" stroke="#4fc3f7" stroke-width="2"/>
+  </g>
+  <text x="780" y="204" fill="#fff" font-size="17" font-weight="700">insights-agent</text>
+  <text x="780" y="222" fill="#4fc3f7" font-size="10" font-weight="500">picks the right source, then says which one it used</text>
+  <rect x="1032" y="190" width="102" height="20" rx="10" fill="#f5a623" opacity="0.18"/>
+  <text x="1083" y="204" fill="#f5a623" font-size="9" font-weight="700" text-anchor="middle">DATABRICKS APP</text>
+  <line x1="746" y1="240" x2="1126" y2="240" stroke="#fff" stroke-width="1" stroke-opacity="0.15"/>
+
+  <circle cx="762" cy="266" r="13" fill="#4fc3f7" opacity="0.18"/>
+  <circle cx="762" cy="266" r="13" fill="none" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="762" y="270" fill="#4fc3f7" font-size="11" font-weight="700" text-anchor="middle">1</text>
+  <text x="788" y="264" fill="#fff" font-size="12" font-weight="600">Ask in plain English</text>
+  <text x="788" y="279" fill="#fff" font-size="9.5" opacity="0.6">no SQL, no schema, no column types to describe</text>
+
+  <circle cx="762" cy="310" r="13" fill="#4fc3f7" opacity="0.18"/>
+  <circle cx="762" cy="310" r="13" fill="none" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="762" y="314" fill="#4fc3f7" font-size="11" font-weight="700" text-anchor="middle">2</text>
+  <text x="788" y="308" fill="#fff" font-size="12" font-weight="600">Genie answers the numbers</text>
+  <text x="788" y="323" fill="#fff" font-size="9.5" opacity="0.6">NL → SQL over public samples.bakehouse, and it shows the SQL</text>
+
+  <circle cx="762" cy="354" r="13" fill="#bb86fc" opacity="0.18"/>
+  <circle cx="762" cy="354" r="13" fill="none" stroke="#bb86fc" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="762" y="358" fill="#bb86fc" font-size="11" font-weight="700" text-anchor="middle">3</text>
+  <text x="788" y="352" fill="#fff" font-size="12" font-weight="600">Vector Search answers the opinions</text>
+  <text x="788" y="367" fill="#fff" font-size="9.5" opacity="0.6">196 review chunks, matched by meaning, tagged by franchise</text>
+
+  <circle cx="762" cy="398" r="13" fill="#2ecc71" opacity="0.18"/>
+  <circle cx="762" cy="398" r="13" fill="none" stroke="#2ecc71" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="762" y="402" fill="#2ecc71" font-size="11" font-weight="700" text-anchor="middle">4</text>
+  <text x="788" y="396" fill="#fff" font-size="12" font-weight="600">Answer, with both sources cited</text>
+  <text x="788" y="411" fill="#fff" font-size="9.5" opacity="0.6">chart + table for the figures, quoted passages for the sentiment</text>
+
+  <g filter="url(#subtleShadow)">
+    <rect x="746" y="426" width="380" height="28" rx="8" fill="url(#chipGrad)" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.3"/>
+  </g>
+  <text x="760" y="444" fill="#4fc3f7" font-size="9.5" font-weight="600">system.ai.gpt-5-5 through the AI Gateway  ·  every turn traced in MLflow</text>
+
+  <!-- ============ Footer ============ -->
+  <rect x="60" y="536" width="1080" height="32" rx="10" fill="#f5a623" opacity="0.08" stroke="#f5a623" stroke-width="1" stroke-opacity="0.25"/>
+  <text x="84" y="556" fill="#f5a623" font-size="10.5" font-weight="700">DEPLOY ONLY</text>
+  <text x="196" y="556" fill="#fff" font-size="10.5" opacity="0.8">`agentbricks dev` cannot build this graph — every binding is auth = "user", and a request user exists only in the deployed app.</text>
+</svg>
