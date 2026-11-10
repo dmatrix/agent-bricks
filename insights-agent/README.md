@@ -24,31 +24,22 @@ MLflow](images/insights_agent_architecture.svg)
 
 **This agent runs deployed only.** `agentbricks dev` cannot build its graph: the Genie binding is
 `auth = "user"`, and request-user auth needs a signed-in person, which only the deployed app behind
-Apps ingress has. That is the price of querying Genie as *you* rather than as the app's service
-principal — see **Why deploy-only**.
+Apps ingress has. 
 
 ## The two data components
 
 The demo's whole point is that these answer different questions and the agent has to choose.
 
-### Genie — the numbers
+### Genie — the sales numbers
 
-A Genie space pinned to four **public** Unity Catalog tables:
-`samples.bakehouse.sales_transactions` (3,333 rows), `sales_customers` (300), `sales_franchises`
-(48) and `sales_suppliers`. Bound with one command:
+A Genie space pinned to four **public** Unity Catalog tables: `samples.bakehouse.sales_transactions` (3,333 rows), `sales_customers` (300), `sales_franchises`(48) and `sales_suppliers`. Bound with one command:
 
 ```bash
 agentbricks tools add genie-agent <32-hex-space-id> --name bakehouse_sales --auth user
 ```
 
-That produces three tools — `bakehouse_sales_ask`, `_poll`, `_query_result`. What matters for a demo
-is the third: **Genie returns the SQL it generated and the rows it got**, so the audience can audit a
-number instead of trusting it. Two behaviours to know:
-
-- `ask` waits up to 120 seconds and can time out. When it does, call `poll` — never resubmit.
-- `query_result` caps at 100 rows with a `truncated` flag, so frame questions as aggregates.
-
-`genie-agent` pins **one** space from the manifest, so the model cannot wander between spaces.
+What matters for a demo is that **Genie returns the SQL it generated and the rows it got**, so the audience can audit a
+number instead of trusting it. 
 
 ### Vector Search — the opinions
 
@@ -56,31 +47,17 @@ A DELTA_SYNC index over customer reviews, retrieved by meaning rather than keywo
 `jules_catalog.default.bakehouse_reviews_index` — **196 chunks averaging 592 characters**, embedded
 with `databricks-gte-large-en`.
 
-It is wired in code rather than in `agent.toml`, because the manifest has no vector-search kind —
-see `agent/mcps.py`. Unity Catalog exposes a vector-search MCP server per schema at
-`/api/2.0/mcp/vector-search/{catalog}/{schema}`, so the index arrives as an MCP tool and needs no
-retriever library: this project ships neither LangChain nor a vector-search SDK.
+It is served from the `jules-bakehouse-vs` endpoint, and wired in code rather than in `agent.toml`,
+because the manifest has no vector-search kind — see `agent/mcps.py`. Unity Catalog exposes a
+vector-search MCP server per schema at `/api/2.0/mcp/vector-search/{catalog}/{schema}`, so the index
+arrives as an MCP tool and needs no retriever library: this project ships neither LangChain nor a
+vector-search SDK.
 
-Each hit carries a `franchiseID`, which is what lets the agent attribute a complaint to the same
-franchise Genie just ranked. That linkage is what makes a two-source question work.
+Because that server is scoped to the *schema*, not the index, its presence proves nothing about the
+index. `agent/agent.py` therefore asserts the index's tool actually resolved and fails the graph
+build if it did not — see **If the reviews tool goes missing**.
 
-**On the source table.** The index reads `jules_catalog.default.bakehouse_review_chunks`, a thin
-derived copy of public `samples.bakehouse.media_gold_reviews_chunked`. The copy exists for exactly
-one reason: a DELTA_SYNC index needs a unique single-column primary key, and the public table's
-`chunk_id` is **not** unique — 196 rows, 138 distinct values. The derived table adds
-`chunk_pk = md5(franchiseID|review_date|chunk_id)`, unique at 196, and keeps `franchiseID`. The
-public data is never modified.
-
-### Python tools — the action
-
-These run **in the app process**, which is what distinguishes them from the two MCP sources above —
-nothing here runs on your machine, because this agent has no local mode at all.
-
-`send_message` carries `needs_approval=True`, so the turn **pauses** and emits an `interrupt`; the
-client resumes with the same `session_id`. Memory tools (`remember`, `recall`, `forget`,
-`list_memories`) are bound to the Memory Store and keyed by actor.
-
-## Act 1 — build it live (~8 min)
+## Demo Act 1 — build it live
 
 Each step is one command. A binding only writes a `[[tools]]` entry into `agent.toml`, which is why
 the agent code does not change between them — and the one capability with no manifest kind, Vector
@@ -95,14 +72,15 @@ agentbricks --profile <profile> deploy insights-agent  # ~3 min first time, ~30s
 
 The line to say out loud: **tool bindings are declarative.** Genie arrives as one command plus a
 redeploy, with no change to the agent code. Beyond the scaffold, three files are hand-written or
-edited, about 92 lines in total: `agent/mcps.py` (the review index, 51 new lines),
-`agent/prompts.py` (which source answers what, 38 new lines), and three edited lines in
-`agent/agent.py` — the prompt import, `instructions=`, and `MODEL`.
+edited, about 138 lines in total: `agent/mcps.py` (the review index, 68 lines),
+`agent/prompts.py` (which source answers what, 38 lines), and `agent/agent.py` — three edited lines
+for the prompt import, `instructions=` and `MODEL`, plus a 29-line guard that fails the build when
+the review index does not resolve.
 
 `agentbricks init` already binds the Session Store, Memory Store and tracing experiment, so there is
 nothing to wire for durability or observability.
 
-## Act 2 — drive it (~8 min)
+## Demo Act 2 — drive it 
 
 Open the printed URL and use the prompt buttons, or paste these in turn:
 
@@ -134,23 +112,14 @@ queries Genie once, then searches reviews once per top franchise, and cites both
 
 ## Charts and tables
 
-A Genie result is not shown as JSON. The chat renders it as a **table**, plus a **chart when the
-data's shape earns one** — expand the `query_result · N rows, M columns` row to see it.
+A Genie result is not shown as JSON. The chat renders it as a **table**, plus a **chart when the**  
+**data's shape earns one.** The chart appears when three conditions hold, and falls back to the table alone when they don't:
 
-The chart appears when three conditions hold, and falls back to the table alone when they don't:
-
-| Condition | Why |
-| --- | --- |
-| A numeric column | there is nothing to plot without a measure |
-| A category **or** a date/timestamp column | category → horizontal bars, date → line |
-| 2–25 rows | one bar is not a comparison; 30 bars is not readable |
-
-Only the **first** numeric column is plotted — a second measure would mean a second y-axis, which
-is never the right answer. Extra columns stay in the table.
-
-**You never describe the data.** Ask in plain English; the chat reads the column types out of
-Genie's own response schema (`type_name` on each column) and picks the form from that. There is no
-type syntax, no hint, and nothing to annotate in the prompt.
+| Condition                                 | Why                                                 |
+| ----------------------------------------- | --------------------------------------------------- |
+| A numeric column                          | there is nothing to plot without a measure          |
+| A category **or** a date/timestamp column | category → horizontal bars, date → line             |
+| 2–25 rows                                 | one bar is not a comparison; 30 bars is not readabl |
 
 ### Queries that produce a chart
 
@@ -158,27 +127,13 @@ All three are verified against the current data.
 
 ```text
 Show me total sales by franchise for the top 6 franchises.
-Return just the franchise name and total sales.
+Return just the franchise name and total sales and plot a chart
 ```
-
-→ **horizontal bar chart**, 6 bars. Baked Bliss 6,642 leads. Asking for "just the name and total" matters: a wider result still charts, but the table
-gets noisy with id, city, district and country.
-
-```text
-Total sales by product.
-```
-
-→ 6 products → **bar chart**, and a good contrast with the franchise one because the same question
-shape works on a different dimension.
 
 ```text
 Show total sales per day as a time series.
 Return the day and total sales only, and fetch the rows.
 ```
-
-→ **line chart**, 18 points. Daily is the right grain here:
-the dataset spans 2024-04-30 to 2024-05-17, so *monthly* collapses to 2 points and *weekly* to 3 —
-both technically chart, neither reads as a trend.
 
 ### Queries that deliberately show only a table
 
@@ -186,68 +141,50 @@ both technically chart, neither reads as a trend.
 Which single franchise had the highest total sales?
 ```
 
-→ one row, so no chart. A one-bar bar chart is not a comparison, and the number is the answer.
-
-**"and fetch the rows" is doing real work in those prompts.** Genie's `ask` returns prose plus the
-SQL but *not* the rows; the rows only arrive when the agent also calls `query_result`. Without that
-nudge it sometimes answers from the prose alone and there is nothing to chart. If a chart does not
-appear, that is the first thing to check.
-
-## Verify the three sources
-
-Tools resolve per request, so the honest check is to ask the agent what it has:
-
-```bash
-agentbricks --profile <profile> endpoint invoke agent-bricks-insights-agent \
-  --path /api/invocations \
-  --json "{\"id\":\"$(uuidgen)\",\"session_id\":\"$(uuidgen)\",\"input\":{\"messages\":[{\"role\":\"user\",\"content\":\"List the names of every tool you have available, one per line. Do not call any of them.\"}]}}"
-```
-
-All of these must appear:
-
-| Expect | Source |
-| --- | --- |
-| `bakehouse_sales_ask` / `_poll` / `_query_result` | Genie |
-| `jules_catalog__default__bakehouse_reviews_index` | Vector Search |
-| `send_message`, `remember`, `recall`, `get_current_time` | Local + memory |
-
-**If the reviews tool is missing, the agent will not tell you.** Servers from `build_mcp_servers()`
-are best-effort — the runtime omits any that fail to connect or list tools — so the agent silently
-answers from sales data alone. The usual cause is permissions: that server is built with a plain
-`WorkspaceClient()`, which deployed is the **app's service principal**, not you. It needs
-`USE_CATALOG` on the catalog, `USE_SCHEMA` on the schema, and `SELECT` on both the index and its
-source table.
-
 ## Why deploy-only
 
 The Genie binding is `auth = "user"` so Genie runs as the signed-in person, who already has access
 to the data. The app's service principal would otherwise need grants on the Genie space and every
 table. Vector Search is the exception: `agent/mcps.py` builds that server with a plain
-`WorkspaceClient()`, so it runs as the app's service principal and does need grants — see **Verify
-the three sources**.
+`WorkspaceClient()`, so deployed it runs as the app's service principal and needs its own grants.
 
-The cost of that choice, all of it app-wide once any binding is `user`:
+## If the reviews tool goes missing
 
-- **No local run.** `agentbricks dev` has no request user, and a request-user discovery failure is
-re-raised rather than skipped, so no graph builds at all.
-- **No automatic crash recovery.** A recovery attempt raises `MCP_USER_AUTH_RECOVERY_UNSUPPORTED`;
-an interrupted turn is marked failed rather than replayed.
-- **No cross-replica takeover** of queued work — the credential lives in memory on the replica that
-accepted the request.
+The symptom is an answer, not an error: the agent replies that it has no review-search tool, or
+quietly answers from sales data alone. **Check whether the index still exists before you check
+grants.** That ordering is the lesson from the one time this actually broke, on 2026-11-10 — all
+three grants were in place and the index had been deleted along with the endpoint hosting it.
 
-Background invocations still work. Do not promise durability under per-user auth.
+Why it was silent: the MCP server is *schema*-scoped, so it exists as long as the schema does. With
+grants intact it connects and `list_tools()` **succeeds** — it just returns zero tools. Nothing is
+logged, so `deployments logs | grep -i mcp` shows only build lines. `agent/agent.py` now raises on
+this instead, naming the tool that failed to resolve and listing the ones that did, but the checks
+below are still the way to find out why.
 
-## Not wired yet
+1. **Does the index exist?**
 
-- **Slack.** `system.ai.slack` is deliberately unbound. Its OAuth connection is ACTIVE with
-`chat:write` in scope, but a request-user discovery failure is **app-wide fatal** — a user who has
-not authorized Slack could not invoke the agent at all, including the Genie turns. Bind it only
-after signing in at **Unity Gateway → MCPs →** `system.ai.slack` **→ Manage provider sign-in**, and add
-its write-tool name to `REQUIRE_APPROVAL` in `agent/agent.py` **in the same change**: this
-framework gates approval by tool *name*, not by verb, so an unlisted write tool would post with no
-pause at all.
-- Until then `send_message` carries the approval demo. It logs the call and returns a string saying
-nothing was delivered, deliberately not phrased as a success. **Delete
-`agent/tools/send_message.py` in the same change that binds a real messaging service**: in the
-sibling `research-agent` project a stub like this one out-competed the real Slack MCP tool, so the
-model picked the stub and reported sends that never happened.
+   ```bash
+   databricks api get /api/2.0/vector-search/indexes/jules_catalog.default.bakehouse_reviews_index
+   ```
+
+   `Unity Catalog entity ... does not exist` means it is gone. Recreate it over
+   `jules_catalog.default.bakehouse_review_chunks` — `DELTA_SYNC`, primary key `chunk_pk`, embeddings
+   from `chunked_text` via `databricks-gte-large-en` — and check the endpoint still exists too, since
+   deleting an endpoint takes its indexes with it.
+
+2. **Is it ready and synced?** The same call reports `status.ready` and `status.indexed_row_count`;
+   expect `true` and **196**. A newly created endpoint reports `ONLINE` well before it can host an
+   index, so a fresh index sits in `PROVISIONING_ENDPOINT` for several minutes with no rows.
+
+3. **Can the caller read it?** Deployed, that is the app's service principal, not you. It needs
+   `USE_CATALOG` on the catalog, `USE_SCHEMA` on the schema, and `SELECT` on **both** the index and
+   its source table — the index is a separate securable, so granting the table is not enough.
+
+   ```bash
+   databricks apps get agent-bricks-insights-agent   # service_principal_client_id
+   databricks grants get TABLE jules_catalog.default.bakehouse_reviews_index
+   databricks grants get TABLE jules_catalog.default.bakehouse_review_chunks
+   ```
+
+   `agentbricks deploy` does not make these grants. Its deploy record shows `"uc_grants": 0`,
+   because only declared `[[tools]]` bindings get reconciled and this server is not one.

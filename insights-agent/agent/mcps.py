@@ -12,10 +12,15 @@ The agent gets three sources, and all three are MCP:
 Choosing MCP over a retriever library is deliberate: this project ships no LangChain and no
 vector-search SDK, and this path needs neither.
 
-**Servers returned here are best-effort.** ``agent.py`` joins them with the ``agent.toml`` servers
-and omits any that fail to connect or list tools — so if this one breaks, the agent silently loses
-its unstructured source and answers from sales data alone. Assert its tools are present rather than
-assuming; see README, "Verify the three sources".
+**A missing index does not look like a failure.** The server URL below is *schema*-scoped, so it
+exists as long as the schema does. Delete the index and the server still connects and still lists
+tools successfully — it just lists zero of them, lands in ``active_servers`` as an empty server, and
+logs nothing. The agent then answers from sales data alone and the only symptom is a reply saying it
+has no review tool.
+
+``REQUIRED_REVIEW_TOOL`` is the guard: ``agent.py`` asserts that name resolved and raises if it did
+not, so the index going missing is a loud error instead of a quiet half-answer. Connection success
+proves nothing on its own.
 """
 
 from databricks.sdk import WorkspaceClient
@@ -30,6 +35,18 @@ from databricks_openai.agents import McpServer
 # `franchiseID` so reviews stay attributable to a franchise.
 _INDEX_CATALOG = "jules_catalog"
 _INDEX_SCHEMA = "default"
+_INDEX_NAME = "bakehouse_reviews_index"
+
+# This server's name, and the MCP tool name Unity Catalog exposes for the index it carries. A
+# schema-scoped vector-search server lists one tool per index, named ``{catalog}__{schema}__{index}``.
+#
+# `agent.py` pairs these two: *if* a server by this name was offered, its tools must include that
+# name, or the graph build fails. Scoping the assertion to this server rather than to the whole tool
+# list is what keeps it from firing when there is no review server to begin with — the hermetic
+# tests stub `mcp_servers` with their own mocks, and `tests/test_agent.py` still asserts that an
+# unrelated unavailable server is skipped rather than fatal.
+REVIEW_SERVER_NAME = "bakehouse_reviews"
+REQUIRED_REVIEW_TOOL = f"{_INDEX_CATALOG}__{_INDEX_SCHEMA}__{_INDEX_NAME}"
 
 
 def build_mcp_servers() -> list[McpServer]:
@@ -39,7 +56,7 @@ def build_mcp_servers() -> list[McpServer]:
     return [
         McpServer(
             url=f"{host}/api/2.0/mcp/vector-search/{_INDEX_CATALOG}/{_INDEX_SCHEMA}",
-            name="bakehouse_reviews",
+            name=REVIEW_SERVER_NAME,
             # `workspace_client` is how this server authenticates — McpServer resolves credentials
             # from it. Do NOT add a top-level `headers=`: McpServer subclasses
             # MCPServerStreamableHttp, which takes headers only inside a

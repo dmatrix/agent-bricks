@@ -11,7 +11,7 @@ from agents.mcp import MCPServerManager
 from databricks.sdk import WorkspaceClient
 from databricks_openai import AsyncDatabricksOpenAI
 
-from agent.mcps import build_mcp_servers
+from agent.mcps import REQUIRED_REVIEW_TOOL, REVIEW_SERVER_NAME, build_mcp_servers
 from agent.prompts import INSIGHTS_PROMPT
 
 # Importing the tools package auto-registers every tool module.
@@ -191,13 +191,14 @@ async def run_agent(
             ):
                 raise error
         active_servers = []
+        resolved_tools: set[str] = set()
         for server in manager.active_servers:
             tool_filter = server.tool_filter
             try:
                 server.tool_filter = None
                 server.cache_tools_list = True
                 async with asyncio.timeout(manager.connect_timeout_seconds):
-                    await server.list_tools()
+                    listed = await server.list_tools()
             except Exception as error:
                 if getattr(server, "_agentbricks_request_user", False) is True or isinstance(
                     error, AuthError
@@ -210,8 +211,35 @@ async def run_agent(
                 )
             else:
                 active_servers.append(server)
+                resolved_tools.update(
+                    name for tool in listed or [] if (name := getattr(tool, "name", ""))
+                )
             finally:
                 server.tool_filter = tool_filter
+
+        # Fail loudly when the review index is gone. The vector-search server is schema-scoped, so
+        # it connects and lists tools successfully whether or not the index exists — the `except`
+        # branch above never fires and nothing is logged. Without this check the agent answers every
+        # question from sales data alone, which still reads like an answer. See `agent/mcps.py`.
+        #
+        # Gated on the review server having been offered at all, so this stays an assertion about
+        # *that* server rather than a blanket requirement on the tool list: other servers are still
+        # best-effort, and the hermetic tests supply neither.
+        review_server_offered = any(
+            getattr(server, "name", "") == REVIEW_SERVER_NAME
+            for server in (*manager.active_servers, *manager.errors)
+        )
+        if review_server_offered and REQUIRED_REVIEW_TOOL not in resolved_tools:
+            raise RuntimeError(
+                f"The customer-review tool {REQUIRED_REVIEW_TOOL!r} did not resolve, so this agent "
+                "would answer from sales data alone. Check, in order: the index exists "
+                "(`databricks api get /api/2.0/vector-search/indexes/"
+                "jules_catalog.default.bakehouse_reviews_index`), it is ready and synced, and the "
+                "caller can read it — deployed that is the app's service principal, which needs "
+                "USE_CATALOG on the catalog, USE_SCHEMA on the schema, and SELECT on both the index "
+                "and its source table. "
+                f"Tools that did resolve: {sorted(resolved_tools) or 'none'}."
+            )
 
         agent = create_agent(
             actor,
