@@ -13,6 +13,7 @@ from unittest.mock import ANY, AsyncMock, MagicMock
 
 import pytest
 from agent.agent import resume_agent
+from agent.mcps import REQUIRED_REVIEW_TOOL, REVIEW_SERVER_NAME
 from agent.tools import all_tools
 from agents import FunctionTool
 from runtime.adapter import _approval_value, _normalize_item
@@ -150,6 +151,68 @@ async def test_agent_events_omit_unavailable_mcp_servers(monkeypatch):
     )
     for server in all_servers:
         server.cleanup.assert_awaited_once()
+
+
+def _review_server(tool_names):
+    """A stub of the hand-built vector-search server, listing ``tool_names``."""
+    value = MagicMock(name=REVIEW_SERVER_NAME)
+    value.name = REVIEW_SERVER_NAME
+    value.tool_filter = lambda *_args: True
+    value.cache_tools_list = False
+    value.connect = AsyncMock()
+    value.cleanup = AsyncMock()
+    value.list_tools = AsyncMock(
+        return_value=[SimpleNamespace(name=name) for name in tool_names]
+    )
+    return value
+
+
+def _patch_for_review_server(monkeypatch, agent_module, server, create_agent):
+    async def mcp_servers(_extra, *, require_approval):
+        return [server]
+
+    monkeypatch.setattr(agent_module, "mcp_servers", mcp_servers)
+    monkeypatch.setattr(agent_module, "build_mcp_servers", lambda: [])
+    monkeypatch.setattr(agent_module, "create_agent", create_agent)
+    monkeypatch.setattr(agent_module, "session_store", lambda _session_id, _actor: None)
+    monkeypatch.setattr(
+        agent_module.Runner,
+        "run_streamed",
+        lambda *_args, **_kwargs: _FakeStreamResult([], [], None),
+    )
+
+
+@pytest.mark.asyncio
+async def test_missing_review_index_is_fatal_not_silent(monkeypatch):
+    # The vector-search MCP server is schema-scoped, so a deleted index does not fail discovery:
+    # the server connects and lists tools successfully, just zero of them. Without the guard in
+    # `agent/agent.py` the agent builds fine and answers every question from sales data alone,
+    # which still reads like an answer. This is the regression that actually happened.
+    import agent.agent as agent_module
+
+    create_agent = MagicMock(return_value=object())
+    server = _review_server([])
+    _patch_for_review_server(monkeypatch, agent_module, server, create_agent)
+
+    with pytest.raises(RuntimeError, match=REQUIRED_REVIEW_TOOL):
+        async with agent_module.run_agent([], session_id="s", actor="actor"):
+            pass
+    create_agent.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_resolved_review_index_builds_the_agent(monkeypatch):
+    # The other half of the pairing: when the index is there, the guard is silent. Without this a
+    # guard that always raised would pass the test above.
+    import agent.agent as agent_module
+
+    create_agent = MagicMock(return_value=object())
+    server = _review_server([REQUIRED_REVIEW_TOOL])
+    _patch_for_review_server(monkeypatch, agent_module, server, create_agent)
+
+    async with agent_module.run_agent([], session_id="s", actor="actor") as result:
+        assert [event async for event in result.stream_events()] == []
+    assert create_agent.call_args.args[1] == [server]
 
 
 @pytest.mark.asyncio
